@@ -6,169 +6,425 @@
     <title>智慧老师3.0 - 智慧分身</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+            background: #0f0f1a;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        
+        .chat-wrapper {
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            max-width: 480px;
+            max-width: 900px;
+            height: 90vh;
+            max-height: 800px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 24px;
             overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
         }
-        .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            padding: 25px 20px;
-            text-align: center;
+        
+        /* 顶部区域 */
+        .top-section {
+            display: flex;
+            align-items: center;
+            padding: 30px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            gap: 25px;
+        }
+        
+        .avatar-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            object-fit: cover;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .online-dot {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 18px;
+            height: 18px;
+            background: #4ade80;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .teacher-info {
+            flex: 1;
             color: white;
         }
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            object-fit: cover;
-            margin-bottom: 10px;
+        
+        .teacher-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-        .teacher-name { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
-        .teacher-title { font-size: 13px; opacity: 0.9; }
+        
+        .teacher-tagline {
+            font-size: 16px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .teacher-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        
+        /* 聊天区域 */
         .chat-area {
-            height: 400px;
+            flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #f8f9fa;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #f8fafc;
         }
-        .message { margin-bottom: 15px; display: flex; align-items: flex-start; }
-        .message.teacher { flex-direction: row; }
-        .message.student { flex-direction: row-reverse; }
+        
+        .chat-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-area::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 3px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 15px;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.teacher {
+            align-self: flex-start;
+        }
+        
+        .message.student {
+            flex-direction: row-reverse;
+            align-self: flex-end;
+        }
+        
         .message-avatar {
-            width: 36px;
-            height: 36px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+        
+        .message.student .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
         .message-content {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.5;
-            margin: 0 10px;
-            white-space: pre-wrap;
+            padding: 16px 22px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.7;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
+        
         .message.teacher .message-content {
             background: white;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 6px;
+            color: #333;
         }
+        
         .message.student .message-content {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 6px;
         }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 22px;
+            background: white;
+            border-radius: 20px;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-left: 63px;
+        }
+        
+        .typing-indicator.active {
+            display: flex;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+        
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        
+        .typing-text {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .welcome-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            margin: 20px 0;
+        }
+        
+        .welcome-card h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .welcome-card p {
+            color: #666;
+            font-size: 15px;
+        }
+        
+        /* 输入区域 */
         .input-area {
-            padding: 15px 20px;
+            padding: 25px 40px;
             background: white;
             border-top: 1px solid #eee;
         }
-        .input-wrapper { display: flex; gap: 10px; }
-        .question-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            outline: none;
-            resize: none;
-            height: 44px;
-            font-family: inherit;
+        
+        .input-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
         }
-        .question-input:focus { border-color: #4facfe; }
+        
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .question-input {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #e8e8e8;
+            border-radius: 30px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+            resize: none;
+            max-height: 120px;
+            line-height: 1.5;
+        }
+        
+        .question-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
         .send-btn {
-            width: 44px;
-            height: 44px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             border: none;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-size: 18px;
+            font-size: 22px;
             cursor: pointer;
-        }
-        .send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .typing {
-            display: none;
+            transition: all 0.3s;
+            display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 10px 15px;
-            background: white;
-            border-radius: 18px;
-            border: 1px solid #e0e0e0;
-            margin-left: 46px;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            flex-shrink: 0;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 快捷问题 */
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 15px;
         }
-        .typing.active { display: flex; }
-        .typing span {
-            width: 8px;
-            height: 8px;
-            background: #999;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-        .typing span:nth-child(2) { animation-delay: 0.2s; }
-        .typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
-        }
-        .welcome-message {
-            text-align: center;
+        
+        .quick-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            font-size: 13px;
             color: #666;
-            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .chat-wrapper {
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+            }
+            
+            .top-section {
+                padding: 20px;
+            }
+            
+            .avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .teacher-name {
+                font-size: 24px;
+            }
+            
+            .chat-area {
+                padding: 20px;
+            }
+            
+            .input-area {
+                padding: 20px;
+            }
+            
+            .message {
+                max-width: 92%;
+            }
+            
+            .message-avatar {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="智慧老师照片.jpg" alt="智慧老师" class="avatar">
-            <div class="teacher-name">智慧老师3.0</div>
-            <div class="teacher-title">你的智慧学习伙伴</div>
-        </div>
-        
-        <div class="chat-area" id="chatArea">
-            <div class="welcome-message" id="welcomeMsg">
-                <h3>👩‍🏫 你好！我是智慧老师3.0</h3>
-                <p>有什么学习上的问题可以问我哦～</p>
+    <div class="chat-wrapper">
+        <!-- 顶部 -->
+        <div class="top-section">
+            <div class="avatar-container">
+                <img src="智慧老师照片.jpg" alt="智慧老师" class="avatar">
+                <div class="online-dot"></div>
             </div>
-            <div class="typing" id="typing"><span></span><span></span><span></span></div>
+            <div class="teacher-info">
+                <div class="teacher-name">智慧老师3.0</div>
+                <div class="teacher-tagline">✨ 你的智慧学习伙伴</div>
+                <div class="teacher-badge">🎓 上海工程技术大学 航空运输学院</div>
+            </div>
         </div>
         
+        <!-- 聊天区域 -->
+        <div class="chat-area" id="chatArea">
+            <div class="welcome-card" id="welcomeMsg">
+                <h3>👩‍🏫 你好！我是智慧老师3.0</h3>
+                <p>有任何教务问题都可以问我哦～</p>
+            </div>
+            <div class="typing-indicator" id="typing">
+                <div class="typing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+                <span class="typing-text">老师正在思考...</span>
+            </div>
+        </div>
+        
+        <!-- 输入区域 -->
         <div class="input-area">
+            <div class="quick-questions">
+                <button class="quick-btn" onclick="askQuestion('加课流程是什么？')">加课流程</button>
+                <button class="quick-btn" onclick="askQuestion('选课需要注意什么？')">选课注意</button>
+                <button class="quick-btn" onclick="askQuestion('培养计划怎么看？')">培养计划</button>
+                <button class="quick-btn" onclick="askQuestion('如何申请缓考？')">缓考申请</button>
+            </div>
             <div class="input-wrapper">
-                <textarea class="question-input" id="questionInput" placeholder="请输入你的问题..." rows="1"></textarea>
+                <div class="input-container">
+                    <textarea class="question-input" id="questionInput" placeholder="输入你的问题..." rows="1"></textarea>
+                </div>
                 <button class="send-btn" id="sendBtn">➤</button>
             </div>
         </div>
     </div>
 
     <script>
-        let userConfig = {};
-        try { userConfig = JSON.parse(localStorage.getItem('zhangwen_config') || '{}'); } catch(e) {}
-        
         const API_URL = 'https://qianfan.baidubce.com/v2/chat/completions';
         const API_KEY = 'bce-v3/ALTAK-jsNPkhuMDPrrD9uBXGHXk/b3bcc6b6cf9f7b29fe17ce350b98ad8a43e6adec';
-        const MODEL = userConfig.model || 'ernie-lite-pro-128k';
+        const MODEL = 'ernie-lite-pro-128k';
         
-        let systemPrompt = `你是智慧老师3.0，来自上海工程技术大学航空运输学院（飞行学院），是一位温柔、有耐心、知识渊博的老师助手。
+        const systemPrompt = `你是智慧老师3.0，来自上海工程技术大学航空运输学院（飞行学院），是一位温柔、有耐心、知识渊博的老师助手。
 
 【核心职责】
 你是一个智能教务问答助手，专门帮助学生解答教务相关问题，包括选课、加课、退课、转专业，培养计划、成绩查询、毕业流程等各种教务问题。
@@ -276,9 +532,14 @@
         const welcomeMsg = document.getElementById('welcomeMsg');
         const typing = document.getElementById('typing');
         
+        function askQuestion(q) {
+            questionInput.value = q;
+            sendMessage();
+        }
+        
         questionInput.addEventListener('input', function() {
             this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
         
         questionInput.addEventListener('keydown', function(e) {
@@ -297,7 +558,8 @@
             welcomeMsg.style.display = 'none';
             addMessage(question, 'student');
             questionInput.value = '';
-            questionInput.style.height = '44px';
+            questionInput.style.height = 'auto';
+            
             typing.classList.add('active');
             chatArea.scrollTop = chatArea.scrollHeight;
             sendBtn.disabled = true;
@@ -335,12 +597,19 @@
         function addMessage(content, sender) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
-            const avatarSrc = sender === 'teacher' ? '智慧老师照片.jpg' : 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="#4facfe"/><text x="18" y="22" text-anchor="middle" fill="white" font-size="16">学</text></svg>');
+            
+            let avatarHTML;
+            if (sender === 'teacher') {
+                avatarHTML = `<img src="智慧老师照片.jpg" class="message-avatar" alt="智慧老师">`;
+            } else {
+                avatarHTML = `<div class="message-avatar">学</div>`;
+            }
             
             messageDiv.innerHTML = `
-                <img src="${avatarSrc}" class="message-avatar" alt="${sender === 'teacher' ? '智慧老师' : '学生'}">
+                ${avatarHTML}
                 <div class="message-content">${content}</div>
             `;
+            
             chatArea.insertBefore(messageDiv, typing);
         }
     </script>
