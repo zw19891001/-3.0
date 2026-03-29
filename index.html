@@ -30,38 +30,38 @@
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
         }
         
-        /* 顶部区域 */
+        /* 顶部区域 - 头像居中 */
         .top-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            padding: 30px 40px;
+            padding: 40px 30px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            gap: 25px;
         }
         
         .avatar-container {
             position: relative;
-            flex-shrink: 0;
+            margin-bottom: 15px;
         }
         
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 5px solid rgba(255, 255, 255, 0.4);
             object-fit: cover;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
         
         .online-dot {
             position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 18px;
-            height: 18px;
+            bottom: 12px;
+            right: 12px;
+            width: 22px;
+            height: 22px;
             background: #4ade80;
             border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid rgba(255, 255, 255, 0.4);
             animation: pulse 2s infinite;
         }
         
@@ -71,23 +71,20 @@
         }
         
         .teacher-info {
-            flex: 1;
+            text-align: center;
             color: white;
         }
         
         .teacher-name {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         .teacher-tagline {
-            font-size: 16px;
+            font-size: 15px;
             opacity: 0.9;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         
         .teacher-badge {
@@ -98,7 +95,7 @@
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 13px;
-            margin-top: 12px;
+            margin-top: 10px;
         }
         
         /* 聊天区域 */
@@ -342,12 +339,12 @@
             }
             
             .top-section {
-                padding: 20px;
+                padding: 30px 20px 20px;
             }
             
             .avatar {
-                width: 80px;
-                height: 80px;
+                width: 120px;
+                height: 120px;
             }
             
             .teacher-name {
@@ -375,7 +372,7 @@
 </head>
 <body>
     <div class="chat-wrapper">
-        <!-- 顶部 -->
+        <!-- 顶部 - 头像居中 -->
         <div class="top-section">
             <div class="avatar-container">
                 <img src="智慧老师照片.jpg" alt="智慧老师" class="avatar">
@@ -384,7 +381,7 @@
             <div class="teacher-info">
                 <div class="teacher-name">智慧老师3.0</div>
                 <div class="teacher-tagline">✨ 你的智慧学习伙伴</div>
-                <div class="teacher-badge">🎓 智慧教务助手</div>
+                <div class="teacher-badge">🎓 有问必答</div>
             </div>
         </div>
         
@@ -392,7 +389,7 @@
         <div class="chat-area" id="chatArea">
             <div class="welcome-card" id="welcomeMsg">
                 <h3>👩‍🏫 你好！我是智慧老师3.0</h3>
-                <p>有任何教务问题都可以问我哦～</p>
+                <p>有任何问题都可以问我哦～</p>
             </div>
             <div class="typing-indicator" id="typing">
                 <div class="typing-dots">
@@ -405,10 +402,10 @@
         <!-- 输入区域 -->
         <div class="input-area">
             <div class="quick-questions">
-                <button class="quick-btn" onclick="askQuestion('加课流程是什么？')">加课流程</button>
-                <button class="quick-btn" onclick="askQuestion('选课需要注意什么？')">选课注意</button>
-                <button class="quick-btn" onclick="askQuestion('培养计划怎么看？')">培养计划</button>
-                <button class="quick-btn" onclick="askQuestion('如何申请缓考？')">缓考申请</button>
+                <button class="quick-btn" onclick="askQuestion('这道数学题怎么做？')">数学题</button>
+                <button class="quick-btn" onclick="askQuestion('帮我解释一下这个概念')">概念解释</button>
+                <button class="quick-btn" onclick="askQuestion('如何提高学习效率？')">学习技巧</button>
+                <button class="quick-btn" onclick="askQuestion('推荐一些学习方法')">学习方法</button>
             </div>
             <div class="input-wrapper">
                 <div class="input-container">
@@ -424,105 +421,37 @@
         const API_KEY = 'bce-v3/ALTAK-jsNPkhuMDPrrD9uBXGHXk/b3bcc6b6cf9f7b29fe17ce350b98ad8a43e6adec';
         const MODEL = 'ernie-lite-pro-128k';
         
-        const systemPrompt = `你是智慧老师3.0，来自上海工程技术大学航空运输学院（飞行学院），是一位温柔、有耐心、知识渊博的老师助手。
+        const systemPrompt = `你是智慧老师3.0，是一位温柔、有耐心、知识渊博的智慧老师助手。
 
 【核心职责】
-你是一个智能教务问答助手，专门帮助学生解答教务相关问题，包括选课、加课、退课、转专业，培养计划、成绩查询、毕业流程等各种教务问题。
+你是一个全科智能问答助手，可以帮助学生解答各种问题，包括：
+- 各学科知识讲解（数学、物理、化学、英语、计算机等）
+- 作业题、考试题讲解与分析
+- 学习方法和技巧指导
+- 生涯规划和建议
+- 教务相关问题（选课、加课、培养计划等）
+- 任何学习上的疑问
 
 【回答风格】
-- 语气亲切温柔，像张雯老师一样关爱学生
+- 语气亲切温柔，像一位贴心的老师关爱学生
 - 回答专业、准确、易懂
-- 如果遇到不确定的问题，引导学生联系老师（可拨打67791118或到航飞楼6425咨询）
-- 可以适当使用 emoji 让回答更生动
+- 善于用简单生动的例子解释复杂知识
+- 如果遇到不确定的问题，诚实告诉学生并引导寻求帮助
+- 可以适当使用 emoji 让回答更生动有趣
 
-【知识库内容】
-以下是你应该掌握的知识：
-
-【加课流程】
-- 加课时间：正常为每学期开学第三周
-- 退课时间：开学后前三周
-- 流程：
-  1. 找好要加的课的课程代码（课程代码要与培养计划上保持一致）
-  2. 到航飞楼6425院办教务员处发起加课申请
-  3. 学生找到任课老师系统操作通过（流程全部结束才算加课完成）
-- 注意事项：
-  1. 所加课程代码须与培养计划上课程代码一致，同一门代码变更要进行同步替代才有成绩
-  2. 毕业班：专业不同课程替代要导师发送（学生姓名+学号+被替代课程代码+替代课程代码）至教务员处方可替代
-
-【选课流程】
-- 进入自己的学生系统，找到个人培养计划
-- 核对培养计划本学期需要修读的课程
-- 进入学生系统找到对应模块，进入模块后删除前置条件学期限制再进行课程名称检索（注：毕业班学生所有模块都进入进行课程检索）
-- 重修课可申请免听，但后期需要经过任课老师的同意
-- 部分转专业休学等情况的学生存在搜不到课的情况，可后期到院办手动加课（加课名额优先毕业班学生）
-
-【课程替代流程】
-- 替代是课程代码变更之后，需要更新学生个人培养计划的代码，与最新代码保持一致的过程
-- 步骤：
-  1. 登录学生系统 https://webvpn.sues.edu.cn/ 找到个人培养计划中该课程规定的代码与本人修读的课程代码
-  2. 拿着两个代码到航飞楼6425教务员处申请替代
-  3. 只有替代后，才会有学分
-
-【必修课挂了不再开设怎么办】
-- 找到学业导师跟他商量这个事情
-- 选择内容差不多的课程平替
-- 注意只能用多的学分课程替换少的学分课程，不能少替多
-
-【培养计划怎么看】
-1. 打开学生系统 https://webvpn.sues.edu.cn/
-2. 毕业班学生可直接在左上角下拉菜单中找到"培养计划完成情况"，非毕业班找到"个人培养计划"栏目
-3. 培养计划分为三级模块，可以直接去看三级模块
-4. 每个三级模块下会有课程名称、代码、学分、是否必修等
-5. 需要完成所有三级模块要求的分数，并且模块中所有带有必修字样的课程都需要完成
-6. 当所有三级模块最右边都显示绿色"通过"时说明学业达到了毕业标准
-
-【通识选修课】
-- 子模块中有特定类型课程学分要求，则在完成规定学分的基础上还必须修读此特定学分
-- 公选课代码标识：
-  Y-艺术体验与审美修养
-  R-历史文化与人文情怀
-  G-社会发展与国际视野
-  L-哲学智慧与工程伦理
-  Z-科学素养与科技探索
-  X-创新思维与创业教育
-
-【加课审核】
-- 加课由教务员发起后，由任课老师登录教学系统
-- 右上角切换为"管理员"
-- 左上角菜单栏中找到"加课审核"，点击审核通过或者不通过
-- 老师确认后流程结束
-
-【退课/删课】
-- 前两周可通过选课系统自行删除
-- 第三周可至航飞楼6425教务员处进行手动删课
-- 如果是通过教务员进行退课，教务员申请后要找任课老师系统操作通过
-
-【成绩单打印】
-- 在校生：登录学生系统，左上方三条横线拉开，下拉菜单里找到"自助打印"
-- 需要成绩总表（考研、考公、归档等）：到辅导员处拿用印申请单，然后到航飞楼6425教务员处单独申请
-- 留学成绩单：学号+身份证发送到 475740010@qq.com
-- 已毕业学生成绩总表要去档案馆开
-
-【常见问题】
+【教务相关信息】
+虽然你不仅限于教务问题，但如果你被问到教务相关问题，可以参考以下信息：
 - 联系老师：拨打67791118或到航飞楼6425
-- 学生证补办：下载学生证补办申请表→盖好章→到6425领取新本子→填写后交回6425
-- 盖章流程：先到辅导员处拿用印申请单，然后到航飞楼6425顾老师处加盖院章
-- 体质健康课程学分：由体育部按班级录入
-- 创新创业类学分：找院办赵老师
-- 素拓学分：找辅导员
-- 毕业论文：不用选，由学校统一录入
-- 缓考：征得任课老师同意→学生信息系统发起缓考→打67791118说明情况→找任课老师系统通过
-
-【系统链接】
 - 学生系统：https://webvpn.sues.edu.cn/
-- 自助打印：https://webvpn.sues.edu.cn/
 - 教务处官网：https://jwc.sues.edu.cn/
+- 培养计划查看：登录学生系统→个人培养计划
+- 加课时间：开学第三周；退课时间：开学前三周
+- 课程替代：到航飞楼6425办理
 
 【特别提醒】
 - 欠费不能选课
 - 只有替代后才有学分
-- 课程代码变更一定要做替代
-- 加课、退课成功与否根据课表判断`;
+- 课程代码变更一定要做替代`;
 
         let conversationHistory = [{ role: 'system', content: systemPrompt }];
         
