@@ -3,543 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智慧老师3.0 - 智慧分身</title>
+    <title>智慧老师3.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-            background: #0f0f1a;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        
-        .chat-wrapper {
-            display: flex;
-            flex-direction: column;
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             width: 100%;
-            max-width: 900px;
-            height: 90vh;
-            max-height: 800px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 24px;
+            max-width: 480px;
             overflow: hidden;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
         }
-        
-        /* 顶部区域 - 头像居中 */
-        .top-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 30px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
         }
-        
-        .avatar-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        
         .avatar {
-            width: 160px;
-            height: 160px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            border: 5px solid rgba(255, 255, 255, 0.4);
+            border: 3px solid white;
             object-fit: cover;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
         }
-        
-        .online-dot {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            width: 22px;
-            height: 22px;
-            background: #4ade80;
-            border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.4);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        
-        .teacher-info {
-            text-align: center;
-            color: white;
-        }
-        
-        .teacher-name {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .teacher-tagline {
-            font-size: 15px;
-            opacity: 0.9;
-        }
-        
-        .teacher-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-        
-        /* 聊天区域 */
-        .chat-area {
-            flex: 1;
+        .name { font-size: 20px; font-weight: bold; }
+        .chat {
+            height: 400px;
             overflow-y: auto;
-            padding: 30px 40px;
+            padding: 15px;
+            background: #f5f5f5;
+        }
+        .msg {
+            margin-bottom: 12px;
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background: #f8fafc;
+            align-items: flex-start;
         }
-        
-        .chat-area::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .chat-area::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
-            border-radius: 3px;
-        }
-        
-        .message {
-            display: flex;
-            gap: 15px;
-            max-width: 85%;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .message.teacher {
-            align-self: flex-start;
-        }
-        
-        .message.student {
-            flex-direction: row-reverse;
-            align-self: flex-end;
-        }
-        
-        .message-avatar {
-            width: 48px;
-            height: 48px;
+        .msg.teacher { flex-direction: row; }
+        .msg.student { flex-direction: row-reverse; }
+        .msg-avatar {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
-        .message.student .message-avatar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .msg-content {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0 8px;
+        }
+        .msg.teacher .msg-content {
+            background: white;
+            border-bottom-left-radius: 4px;
+        }
+        .msg.student .msg-content {
+            background: #4facfe;
             color: white;
-            font-size: 18px;
-            font-weight: bold;
+            border-bottom-right-radius: 4px;
         }
-        
-        .message-content {
-            padding: 16px 22px;
-            border-radius: 20px;
-            font-size: 15px;
-            line-height: 1.7;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        }
-        
-        .message.teacher .message-content {
-            background: white;
-            border-bottom-left-radius: 6px;
-            color: #333;
-        }
-        
-        .message.student .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 6px;
-        }
-        
-        .typing-indicator {
-            display: none;
-            align-items: center;
-            gap: 15px;
-            padding: 16px 22px;
-            background: white;
-            border-radius: 20px;
-            border-bottom-left-radius: 6px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            margin-left: 63px;
-        }
-        
-        .typing-indicator.active {
-            display: flex;
-        }
-        
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            background: #667eea;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite;
-        }
-        
-        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes bounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-6px); }
-        }
-        
-        .typing-text {
-            color: #666;
-            font-size: 13px;
-        }
-        
-        .welcome-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            margin: 20px 0;
-        }
-        
-        .welcome-card h3 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 12px;
-        }
-        
-        .welcome-card p {
-            color: #666;
-            font-size: 15px;
-        }
-        
-        /* 输入区域 */
         .input-area {
-            padding: 25px 40px;
+            padding: 12px 15px;
             background: white;
             border-top: 1px solid #eee;
         }
-        
-        .input-wrapper {
+        .input-row {
             display: flex;
-            gap: 15px;
-            align-items: flex-end;
+            gap: 8px;
         }
-        
-        .input-container {
+        .input {
             flex: 1;
-            position: relative;
-        }
-        
-        .question-input {
-            width: 100%;
-            padding: 16px 24px;
-            border: 2px solid #e8e8e8;
-            border-radius: 30px;
-            font-size: 15px;
-            font-family: inherit;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
             outline: none;
-            transition: all 0.3s;
             resize: none;
-            max-height: 120px;
-            line-height: 1.5;
+            height: 42px;
+            font-family: inherit;
         }
-        
-        .question-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        }
-        
-        .send-btn {
-            width: 56px;
-            height: 56px;
+        .input:focus { border-color: #4facfe; }
+        .send {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             border: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
-            font-size: 22px;
+            font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
+        }
+        .send:disabled { opacity: 0.6; }
+        .typing {
+            display: none;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            flex-shrink: 0;
-        }
-        
-        .send-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-        
-        .send-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* 快捷问题 */
-        .quick-questions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .quick-btn {
-            padding: 8px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
+            gap: 4px;
+            padding: 8px 12px;
             background: white;
-            font-size: 13px;
-            color: #666;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-radius: 12px;
+            margin-left: 40px;
+            margin-bottom: 12px;
         }
-        
-        .quick-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
+        .typing.on { display: flex; }
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background: #999;
+            border-radius: 50%;
+            animation: bounce 1s infinite;
         }
-        
-        /* 响应式 */
-        @media (max-width: 600px) {
-            .chat-wrapper {
-                height: 100vh;
-                max-height: none;
-                border-radius: 0;
-            }
-            
-            .top-section {
-                padding: 30px 20px 20px;
-            }
-            
-            .avatar {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .teacher-name {
-                font-size: 24px;
-            }
-            
-            .chat-area {
-                padding: 20px;
-            }
-            
-            .input-area {
-                padding: 20px;
-            }
-            
-            .message {
-                max-width: 92%;
-            }
-            
-            .message-avatar {
-                width: 40px;
-                height: 40px;
-            }
+        .typing span:nth-child(2) { animation-delay: 0.15s; }
+        .typing span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .welcome {
+            text-align: center;
+            color: #888;
+            padding: 60px 20px;
         }
     </style>
 </head>
 <body>
-    <div class="chat-wrapper">
-        <!-- 顶部 - 头像居中 -->
-        <div class="top-section">
-            <div class="avatar-container">
-                <img src="智慧老师照片.jpg" alt="智慧老师" class="avatar">
-                <div class="online-dot"></div>
-            </div>
-            <div class="teacher-info">
-                <div class="teacher-name">智慧老师3.0</div>
-                <div class="teacher-tagline">✨ 你的智慧学习伙伴</div>
-                <div class="teacher-badge">🎓 有问必答</div>
-            </div>
+    <div class="container">
+        <div class="header">
+            <img src="智慧老师照片.jpg" class="avatar">
+            <div class="name">智慧老师3.0</div>
         </div>
-        
-        <!-- 聊天区域 -->
-        <div class="chat-area" id="chatArea">
-            <div class="welcome-card" id="welcomeMsg">
-                <h3>👩‍🏫 你好！我是智慧老师3.0</h3>
-                <p>有任何问题都可以问我哦～</p>
-            </div>
-            <div class="typing-indicator" id="typing">
-                <div class="typing-dots">
-                    <span></span><span></span><span></span>
-                </div>
-                <span class="typing-text">老师正在思考...</span>
-            </div>
+        <div class="chat" id="chat">
+            <div class="welcome" id="welcome">👩‍🏫 有问题尽管问我～</div>
+            <div class="typing" id="typing"><span></span><span></span><span></span></div>
         </div>
-        
-        <!-- 输入区域 -->
         <div class="input-area">
-            <div class="quick-questions">
-                <button class="quick-btn" onclick="askQuestion('这道数学题怎么做？')">数学题</button>
-                <button class="quick-btn" onclick="askQuestion('帮我解释一下这个概念')">概念解释</button>
-                <button class="quick-btn" onclick="askQuestion('如何提高学习效率？')">学习技巧</button>
-                <button class="quick-btn" onclick="askQuestion('推荐一些学习方法')">学习方法</button>
-            </div>
-            <div class="input-wrapper">
-                <div class="input-container">
-                    <textarea class="question-input" id="questionInput" placeholder="输入你的问题..." rows="1"></textarea>
-                </div>
-                <button class="send-btn" id="sendBtn">➤</button>
+            <div class="input-row">
+                <textarea class="input" id="input" placeholder="输入问题..." rows="1"></textarea>
+                <button class="send" id="send">➤</button>
             </div>
         </div>
     </div>
-
     <script>
-        const API_URL = 'https://qianfan.baidubce.com/v2/chat/completions';
-        const API_KEY = 'bce-v3/ALTAK-jsNPkhuMDPrrD9uBXGHXk/b3bcc6b6cf9f7b29fe17ce350b98ad8a43e6adec';
+        const API = 'https://qianfan.baidubce.com/v2/chat/completions';
+        const KEY = 'bce-v3/ALTAK-jsNPkhuMDPrrD9uBXGHXk/b3bcc6b6cf9f7b29fe17ce350b98ad8a43e6adec';
         const MODEL = 'ernie-lite-pro-128k';
-        
-        const systemPrompt = `你是智慧老师3.0，是一位温柔、有耐心、知识渊博的智慧老师助手。
-
-【核心职责】
-你是一个全科智能问答助手，可以帮助学生解答各种问题，包括：
-- 各学科知识讲解（数学、物理、化学、英语、计算机等）
-- 作业题、考试题讲解与分析
-- 学习方法和技巧指导
-- 生涯规划和建议
-- 教务相关问题（选课、加课、培养计划等）
-- 任何学习上的疑问
-
-【回答风格】
-- 语气亲切温柔，像一位贴心的老师关爱学生
-- 回答专业、准确、易懂
-- 善于用简单生动的例子解释复杂知识
-- 如果遇到不确定的问题，诚实告诉学生并引导寻求帮助
-- 可以适当使用 emoji 让回答更生动有趣
-
-【教务相关信息】
-虽然你不仅限于教务问题，但如果你被问到教务相关问题，可以参考以下信息：
-- 联系老师：拨打67791118或到航飞楼6425
-- 学生系统：https://webvpn.sues.edu.cn/
-- 教务处官网：https://jwc.sues.edu.cn/
-- 培养计划查看：登录学生系统→个人培养计划
-- 加课时间：开学第三周；退课时间：开学前三周
-- 课程替代：到航飞楼6425办理
-
-【特别提醒】
-- 欠费不能选课
-- 只有替代后才有学分
-- 课程代码变更一定要做替代`;
-
-        let conversationHistory = [{ role: 'system', content: systemPrompt }];
-        
-        const questionInput = document.getElementById('questionInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const chatArea = document.getElementById('chatArea');
-        const welcomeMsg = document.getElementById('welcomeMsg');
+        const SYS = '你是智慧老师3.0，是一位温柔耐心的智慧老师。帮助学生解答各学科知识、学习问题，可以适当使用emoji。回答要专业、易懂、亲切。';
+        let history = [{ role: 'system', content: SYS }];
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('input');
+        const send = document.getElementById('send');
         const typing = document.getElementById('typing');
-        
-        function askQuestion(q) {
-            questionInput.value = q;
-            sendMessage();
+        const welcome = document.getElementById('welcome');
+        input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 80) + 'px'; });
+        input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendQ(); } });
+        send.addEventListener('click', sendQ);
+        function sendQ() {
+            const q = input.value.trim();
+            if (!q) return;
+            welcome.style.display = 'none';
+            addMsg(q, 'student');
+            input.value = '';
+            input.style.height = '42px';
+            typing.classList.add('on');
+            send.disabled = true;
+            history.push({ role: 'user', content: q });
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + KEY },
+                body: JSON.stringify({ model: MODEL, messages: history, temperature: 0.7 })
+            }).then(r => r.json()).then(d => {
+                const a = d.choices?.[0]?.message?.content || '抱歉，无法回答。';
+                history.push({ role: 'assistant', content: a });
+                addMsg(a, 'teacher');
+            }).catch(() => addMsg('连接失败，请重试。', 'teacher'));
+            typing.classList.remove('on');
+            send.disabled = false;
         }
-        
-        questionInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
-        
-        questionInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        
-        sendBtn.addEventListener('click', sendMessage);
-        
-        async function sendMessage() {
-            const question = questionInput.value.trim();
-            if (!question) return;
-            
-            welcomeMsg.style.display = 'none';
-            addMessage(question, 'student');
-            questionInput.value = '';
-            questionInput.style.height = 'auto';
-            
-            typing.classList.add('active');
-            chatArea.scrollTop = chatArea.scrollHeight;
-            sendBtn.disabled = true;
-            
-            try {
-                conversationHistory.push({ role: 'user', content: question });
-                
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + API_KEY
-                    },
-                    body: JSON.stringify({
-                        model: MODEL,
-                        messages: conversationHistory,
-                        temperature: 0.7
-                    })
-                });
-                
-                const data = await response.json();
-                const answer = data.choices?.[0]?.message?.content || '抱歉，我暂时无法回答这个问题。';
-                
-                conversationHistory.push({ role: 'assistant', content: answer });
-                addMessage(answer, 'teacher');
-            } catch (error) {
-                addMessage('抱歉，连接出现了问题。请稍后再试。', 'teacher');
-            }
-            
-            typing.classList.remove('active');
-            sendBtn.disabled = false;
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }
-        
-        function addMessage(content, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            let avatarHTML;
-            if (sender === 'teacher') {
-                avatarHTML = `<img src="智慧老师照片.jpg" class="message-avatar" alt="智慧老师">`;
-            } else {
-                avatarHTML = `<div class="message-avatar">学</div>`;
-            }
-            
-            messageDiv.innerHTML = `
-                ${avatarHTML}
-                <div class="message-content">${content}</div>
-            `;
-            
-            chatArea.insertBefore(messageDiv, typing);
+        function addMsg(content, who) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + who;
+            const avatar = who === 'teacher' ? `<img src="智慧老师照片.jpg" class="msg-avatar">` : `<img src="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" rx="16" fill="#4facfe"/><text x="16" y="21" text-anchor="middle" fill="white" font-size="14">学</text></svg>')}" class="msg-avatar">`;
+            div.innerHTML = avatar + `<div class="msg-content">${content}</div>`;
+            chat.insertBefore(div, typing);
         }
     </script>
 </body>
