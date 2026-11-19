@@ -183,10 +183,14 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + KEY },
                 body: JSON.stringify({ model: MODEL, messages: history, temperature: 0.7 })
             }).then(r => r.json()).then(d => {
-                const a = d.choices?.[0]?.message?.content || '抱歉，无法回答。';
-                history.push({ role: 'assistant', content: a });
+                const m = d.choices?.[0]?.message || {};
+                let a = m.content || m.reasoning_content || '';
+                if (!a) {
+                    a = '抱歉，无法回答。' + (d.error ? '（原因：' + (d.error.message || d.error.code) + '）' : (JSON.stringify(d).slice(0, 150)));
+                }
+                history.push({ role: 'assistant', content: m.content || a });
                 addMsg(a, 'teacher');
-            }).catch(() => addMsg('连接失败，请重试。', 'teacher'));
+            }).catch(e => addMsg('连接失败，请重试。（' + ((e && e.message) || e) + '）', 'teacher'));
             typing.classList.remove('on');
             send.disabled = false;
         }
